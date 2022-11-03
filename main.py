@@ -6,8 +6,6 @@ import random
 BOARD_COLS = 7
 BOARD_ROWS = 6
 
-# Game board object
-
 
 class Board():
 
@@ -18,8 +16,8 @@ class Board():
         self.last_move = [-1, -1]
 
     def print_start_view(self):  # funkcja z animacją
-        filenames = ["ascii_1.txt", "ascii_2.txt",
-                     "ascii_3.txt", "ascii_4.txt"]
+        filenames = ["ascii_3.txt", "ascii_4.txt",
+                     "ascii_2.txt", "ascii_1.txt"]
         frames = []
         os.system("cls")
         for name in filenames:
@@ -31,8 +29,7 @@ class Board():
             os.system("cls")
 
     def print_logo(self):
-        print("""\r
-
+        print("""
    __________  _   ___   ____________________   __ __
   / ____/ __ \/ | / / | / / ____/ ____/_  __/  / // /
  / /   / / / /  |/ /  |/ / __/ / /     / /    / // /_
@@ -41,12 +38,12 @@ class Board():
                                                      
 
         """, end="")
-        time.sleep(2)
+        time.sleep(0)
 
-        print("\n-------- Witaj w grze CONNECT4! -------- \n ")
+        print("-------- Witaj w grze  -------- \n ")
 
     def print_board(self):  # funkcja wyświetlająca aktualna plansze
-
+        print("\n")
         for r in range(BOARD_COLS):
             print(f"  [{r+1}] ", end="")  # numerowanie kolumn
         print("\n")
@@ -131,8 +128,7 @@ class Board():
 def play():
     # Inicjalizacja gry
     game = Board()
-    # game.print_start_view()
-    # game.print_logo()
+    game.print_start_view()
 
     valid_choose_whoPlays = False
     while not valid_choose_whoPlays:
@@ -145,12 +141,13 @@ def play():
 
     game_over = False
     while not game_over:
+        game.print_logo()
         game.print_board()
 
         valid_move = False
         while not valid_move:
             # pytanie gracza o wybranie kolumny
-            if (whoPlays == "G"):
+            if (whoPlays == "G" or whoPlays == "g"):
                 user_move = input(
                     f"Teraz tura: {game.which_turn()}- wybierz kolumnę (1-7): ")
                 try:
@@ -158,7 +155,7 @@ def play():
                 except:
                     print(f"\rWybierz numer od 1 do 7", end="")
 
-            if (whoPlays == "K"):
+            if (whoPlays == "K" or whoPlays == "k"):
                 if (game.which_turn() == "X"):  # ruch człowieka
                     user_move = input(
                         f"Teraz tura: {game.which_turn()}- wybierz kolumnę (1-7): ")
@@ -176,7 +173,7 @@ def play():
                     except:
                         print(f"\rKomputer zle wybrał ", end="")
 
-                # gdy game.check_winner() stanie się prawdą gra się kończy
+        # gdy game.check_winner() stanie się prawdą gra się kończy
         game_over = game.check_winner(game)
         print("\n")
         game.print_board()
