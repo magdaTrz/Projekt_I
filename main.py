@@ -1,5 +1,6 @@
 import time
 import os
+import random
 
 # Wymiary planszy
 BOARD_COLS = 7
@@ -17,7 +18,8 @@ class Board():
         self.last_move = [-1, -1]
 
     def print_start_view(self):  # funkcja z animacją
-        filenames = ["ascii_1.txt", "ascii_2.txt", "ascii_3.txt"]
+        filenames = ["ascii_1.txt", "ascii_2.txt",
+                     "ascii_3.txt", "ascii_4.txt"]
         frames = []
         os.system("cls")
         for name in filenames:
@@ -25,24 +27,25 @@ class Board():
                 frames.append(f.readlines())
         for frame in frames:
             print("".join(frame))
-            time.sleep(1)
+            time.sleep(0.5)
             os.system("cls")
 
-    def print_board(self):  # funkcja wyświetlająca aktualna plansze
-
+    def print_logo(self):
         print("""\r
-            .___......................................._......._.._...
-            (.._`\....................................(.)_....(.)(.)..
-            |.(.(_)..._.....___....___.....__.....___.|.,_)...|.||.|..
-            |.|.._../'_`\./'._.`\/'._.`\./'__`\./'___)|.|.....|.||.|_.
-            |.(_(.)(.(_).)|.(.).||.(.).|(..___/(.(___.|.|_....(__.,__)
-            (____/'`\___/'(_).(_)(_).(_)`\____)`\____)`\__)......(_)..
-            ..........................................................
-            ..........................................................
-            """, end="")
-        time.sleep(3)
 
-        print("\n******** Witaj w grze CONNECT4! ******** \n ")
+   __________  _   ___   ____________________   __ __
+  / ____/ __ \/ | / / | / / ____/ ____/_  __/  / // /
+ / /   / / / /  |/ /  |/ / __/ / /     / /    / // /_
+/ /___/ /_/ / /|  / /|  / /___/ /___  / /    /__  __/
+\____/\____/_/ |_/_/ |_/_____/\____/ /_/       /_/   
+                                                     
+
+        """, end="")
+        time.sleep(2)
+
+        print("\n-------- Witaj w grze CONNECT4! -------- \n ")
+
+    def print_board(self):  # funkcja wyświetlająca aktualna plansze
 
         for r in range(BOARD_COLS):
             print(f"  [{r+1}] ", end="")  # numerowanie kolumn
@@ -54,7 +57,7 @@ class Board():
                 print(f"  {self.board[r][c]}  |", end="")
             print("\n ------------------------------------------")
 
-        print(f"{'^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'}\n")
+        print(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
 
     def which_turn(self):  # funkcja sprawdzająca czyja jest aktualnie tura
         players = ['X', 'O']
@@ -122,6 +125,16 @@ def play():
     # Inicjalizacja gry
     game = Board()
     game.print_start_view()
+    game.print_logo()
+
+    print()
+    whoPlays = input(
+        "Z kim chcesz grać? Wpisz: \n 'K' - z komputerem  'G' - z drugim graczem \n")
+    try:
+        if input not in ['K', 'G']:
+            raise Exception
+    except:
+        print(f"Wybrano niepoprawną opcję")
 
     game_over = False
     while not game_over:
@@ -130,14 +143,33 @@ def play():
         valid_move = False
         while not valid_move:
             # pytanie gracza o wybranie kolumny
-            user_move = input(
-                f"Teraz tura: {game.which_turn()}- wybierz kolumnę (1-7): ")
-            try:
-                valid_move = game.turn(int(user_move)-1)
-            except:
-                print(f"Wybierz numer od 1 do 7")
+            if (whoPlays == "G"):
+                user_move = input(
+                    f"Teraz tura: {game.which_turn()}- wybierz kolumnę (1-7): ")
+                try:
+                    valid_move = game.turn(int(user_move)-1)
+                except:
+                    print(f"\rWybierz numer od 1 do 7", end="")
 
-        # gdy game.check_winner() stanie się prawdą gra się kończy
+            if (whoPlays == "K"):
+                if (game.which_turn() == "X"):  # ruch człowieka
+                    user_move = input(
+                        f"Teraz tura: {game.which_turn()}- wybierz kolumnę (1-7): ")
+                try:
+                    valid_move = game.turn(int(user_move)-1)
+                except:
+                    print(f"\rWybierz numer od 1 do 7", end="")
+
+                if (game.which_turn() == "O"):  # ruch komputera
+                    cpu_move = random.randint(1, 7)
+                    print(
+                        f"Teraz tura: {game.which_turn()} komputer wybrał: {cpu_move}")
+                    try:
+                        valid_move = game.turn(cpu_move-1)
+                    except:
+                        print(f"\rKomputer zle wybrał ", end="")
+
+                # gdy game.check_winner() stanie się prawdą gra się kończy
         game_over = game.check_winner(game)
         print("\n")
         game.print_board()
