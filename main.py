@@ -79,6 +79,13 @@ class Board():
 
         return False  # nie znaleziono żadnego wolnego rzedu
 
+    def check_whoPlaying(self, letter):
+        letter = letter.upper()
+        if (letter == 'K' or letter == 'G'):
+            return True
+        else:
+            return False
+
     def check_winner(self, game):
         chip = game.which_turn()
 
@@ -124,17 +131,17 @@ class Board():
 def play():
     # Inicjalizacja gry
     game = Board()
-    game.print_start_view()
-    game.print_logo()
+    # game.print_start_view()
+    # game.print_logo()
 
-    print()
-    whoPlays = input(
-        "Z kim chcesz grać? Wpisz: \n 'K' - z komputerem  'G' - z drugim graczem \n")
-    try:
-        if input not in ['K', 'G']:
-            raise Exception
-    except:
-        print(f"Wybrano niepoprawną opcję")
+    valid_choose_whoPlays = False
+    while not valid_choose_whoPlays:
+        whoPlays = input(
+            "Z kim chcesz grać? Wpisz: \n 'K' - z komputerem  'G' - z drugim graczem \n")
+        try:
+            valid_choose_whoPlays = game.check_whoPlaying(whoPlays)
+        except:
+            print(f"Wybrano niepoprawną opcję")
 
     game_over = False
     while not game_over:
